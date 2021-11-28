@@ -1,0 +1,32 @@
+
+plugins {
+    id("java")
+    id("application")
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+version = "1.0-SNAPSHOT"
+
+application {
+    mainClass.set("dji.netty.client.Client")
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls' ]
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    implementation("io.netty:netty-all:4.1.59.Final")
+    implementation(project(":common"))
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    implementation group: 'org.openjfx', name: 'javafx', version: '18-ea+7', ext: 'pom'
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: '18-ea+7'
+    implementation group: 'org.openjfx', name: 'javafx-base', version: '18-ea+7'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: '18-ea+7'
+}
+
+repositories {
+    mavenCentral()
+}

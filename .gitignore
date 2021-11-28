@@ -1,0 +1,38 @@
+.gradle
+*/build/
+build/
+gradle
+*.log
+/server/download/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Project DB ###
+*.db
+/logs/
+*.gz
+
+### Properties ###
+/server/src/main/resources/application-public.properties
+/server/src/main/resources/application-private.properties
