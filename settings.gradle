@@ -2,4 +2,5 @@ rootProject.name = 'GB_cloud'
 include 'server'
 include 'client'
 include 'common'
+include 'main'
 
