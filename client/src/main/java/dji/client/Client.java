@@ -2,10 +2,7 @@ package dji.client;
 
 import dji.common.handler.JsonDecoder;
 import dji.common.handler.JsonEncoder;
-import dji.common.objects.EndFileTransferMessage;
-import dji.common.objects.FileTransferMessage;
-import dji.common.objects.Message;
-import dji.common.objects.RequestFileMessage;
+import dji.common.objects.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -41,26 +38,7 @@ public class Client {
                                     new LengthFieldPrepender(3),
                                     new JsonDecoder(),
                                     new JsonEncoder(),
-                                    new SimpleChannelInboundHandler<Message>() {
-                                        @Override
-                                        protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
-                                            if (msg instanceof FileTransferMessage) {
-                                                var message = (FileTransferMessage) msg;
-                                                try (RandomAccessFile randomAccessFile = new RandomAccessFile("Netty\\1" , "rw")) {
-                                                    randomAccessFile.seek(message.getStartPosition());
-                                                    randomAccessFile.write(message.getContent());
-                                                } catch (FileNotFoundException e) {
-                                                    e.printStackTrace();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            if (msg instanceof EndFileTransferMessage) {
-                                                System.out.println("File transfer is finished");
-                                                ctx.close();
-                                            }
-                                        }
-                                    }
+                                    new ClientHandler()
                             );
                         }
                     });
@@ -68,7 +46,7 @@ public class Client {
             System.out.println("Client started");
 
             ChannelFuture channelFuture = bootstrap.connect("localhost", 9000).sync();
-            channelFuture.channel().writeAndFlush(new RequestFileMessage());
+            channelFuture.channel().writeAndFlush(new RequestFileList());
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
