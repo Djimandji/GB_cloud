@@ -15,6 +15,7 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Scanner;
 
 public class Client {
 
@@ -44,10 +45,20 @@ public class Client {
                     });
 
             System.out.println("Client started");
-
             ChannelFuture channelFuture = bootstrap.connect("localhost", 9000).sync();
             channelFuture.channel().writeAndFlush(new RequestFileList());
+            Scanner sc = new Scanner(System.in);
+            String command;
+            CommandMessage commandMsg = new CommandMessage();
+            while (channelFuture.channel().isActive()) {
+                command = sc.next();
+                commandMsg.setCommand(command);
+                channelFuture.channel().writeAndFlush(commandMsg);
+                System.out.println("Try to send message: " + commandMsg.getCommand());
+                channelFuture.channel().read();
+            }
             channelFuture.channel().closeFuture().sync();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {

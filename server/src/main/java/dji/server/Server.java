@@ -32,6 +32,7 @@ public class Server {
         if (!SERVER_DIR.exists()) {
             System.out.println("creating directory: " + SERVER_DIR.getName());
             SERVER_DIR.mkdir();
+        }
             NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
             NioEventLoopGroup workerGroup = new NioEventLoopGroup();
             try {
@@ -67,4 +68,4 @@ public class Server {
             }
         }
     }
-}
+
