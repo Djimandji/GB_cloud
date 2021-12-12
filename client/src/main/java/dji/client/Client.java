@@ -58,7 +58,7 @@ public class Client {
             ChannelFuture channelFuture = bootstrap.connect("localhost", 9000).sync();
             channelFuture.channel().writeAndFlush(new RequestFileList());
             Scanner sc = new Scanner(System.in);
-            String command;
+            String command = "";
             String[] subCommand;
             CommandMessage commandMsg = new CommandMessage();
             System.out.println("type the command or ? to see command list");

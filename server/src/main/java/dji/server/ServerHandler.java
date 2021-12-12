@@ -32,7 +32,10 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
 
                 case "?":
                     System.out.println("New command");
-                    response.setResponse("Server response");
+                    response.setResponse("type 'getFile:' or 'sendFile:' (without spaces) + name of file to download file from server or send file on server \n" +
+                            "type 'fileList' to see files on server and client \n"
+                    + "type 'disconnect' for disconnect from server \n" + "type 'clearServer' for delete all file on server");
+
                     break;
 
                 case "getFile":

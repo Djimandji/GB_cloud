@@ -3,7 +3,7 @@
 build/
 gradle
 *.log
-storage/
+*/storage/
 /server/download/
 /server/storage/
 /client/storage/
