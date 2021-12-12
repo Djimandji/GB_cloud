@@ -56,6 +56,17 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
                 case "fileList":
                     channelRead0(ctx, new RequestFileList());
                     response.setResponse("command done");
+
+                case "disconnect":
+                    ctx.close();
+
+
+                case "clearServer":
+                    for (File item : SERVER_DIR.listFiles()) {
+                        item.delete();
+                    }
+                    response.setResponse("Server was clear");
+
             }
             ctx.writeAndFlush(response);
         }

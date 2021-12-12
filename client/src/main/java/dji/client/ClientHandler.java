@@ -31,7 +31,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
         }
         if (msg instanceof EndFileTransferMessage) {
             System.out.println("File transfer is finished");
-            ctx.close();
         }
 
         if (msg instanceof FileListMessage) {

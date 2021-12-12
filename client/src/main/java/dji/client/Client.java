@@ -66,6 +66,11 @@ public class Client {
             while (channelFuture.channel().isActive()) {
                 command = sc.next();
                 commandMsg.setCommand(command);
+                if (command.equals("disconnect")) {
+                    channelFuture.channel().close();
+                    channelFuture.channel().closeFuture().sync();
+                    System.out.println("Client disconnect");
+                }
                 if (command.startsWith("sendFile:")) {
                     subCommand = command.split(":");
                     if (subCommand.length > 1) {
