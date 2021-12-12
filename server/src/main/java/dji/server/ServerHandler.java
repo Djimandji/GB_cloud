@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -12,10 +13,9 @@ import java.util.List;
 
 public class ServerHandler extends SimpleChannelInboundHandler <Message> {
 
-    public static String CLIENT_DIR = "D:\\JAVA-projects\\GB_4\\GB_cloud\\client\\storage";
+    private static final String server = System.getProperty("user.dir") + "\\storage";
+    private static final File SERVER_DIR = new File(server);
     private static final int BUFFER_SIZE = 1024 * 64;
-    private static final File SERVER_DIR = new File ("D:\\JAVA-projects\\GB_cloud\\server\\storage");
-    private File file;
 
 
     public ServerHandler() {
@@ -28,7 +28,7 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
             String command = ((CommandMessage) msg).getCommand();
             String[] subCommand;
             ServerResponse response = new ServerResponse();
-            response.setResponse("Server response");
+            response.setResponse("Unknown command");
             subCommand = command.split(":");
             switch (subCommand[0]) {
 
@@ -41,19 +41,26 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
                     System.out.println("New command");
                     if ((subCommand.length > 1)) {
                         System.out.println(SERVER_DIR + "\\" + subCommand[1]);
-                        System.out.println(new File(SERVER_DIR + "\\" +  subCommand[1]).isFile());
+                        System.out.println(new File(SERVER_DIR + "\\" + subCommand[1]).isFile());
                         if (new File(SERVER_DIR + "\\" + subCommand[1]).isFile()) {
                             requestFileMessage(ctx, subCommand[1]);
                         } else {
                             response.setResponse("File not found");
                         }
                     }
+
+                case "sendFile":
+                    System.out.println("New send file message");
+
+
+                case "fileList":
+                    channelRead0(ctx, new RequestFileList());
+                    response.setResponse("command done");
             }
             ctx.writeAndFlush(response);
         }
 
         if (msg instanceof RequestFileList) {
-
             List<File> files = new ArrayList<>();
             for (File item : SERVER_DIR.listFiles()) {
                 files.add(item);
@@ -61,9 +68,21 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
             FileListMessage fileList = new FileListMessage();
             fileList.setFileList(files);
             ctx.writeAndFlush(fileList);
-            ServerResponse response = new ServerResponse();
-            response.setResponse("type the command or '?' to see command list");
-            ctx.writeAndFlush(response);
+        }
+
+        if (msg instanceof FileTransferMessage) {
+            var message = (FileTransferMessage) msg;
+            try (RandomAccessFile randomAccessFile = new RandomAccessFile(SERVER_DIR + "\\" + ((FileTransferMessage) msg).getName(), "rw")) {
+                randomAccessFile.seek(message.getStartPosition());
+                randomAccessFile.write(message.getContent());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (msg instanceof EndFileTransferMessage) {
+            System.out.println("File transfer is finished");
         }
     }
 

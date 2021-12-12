@@ -11,7 +11,9 @@ import java.io.RandomAccessFile;
 
 public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
-    public static String CLIENT_DIR = "D:\\JAVA-projects\\GB_cloud\\client\\storage";
+    private static final String client = System.getProperty("user.dir") + "\\client" + "\\storage";
+    private static final File CLIENT_DIR = new File(client);
+
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
@@ -33,8 +35,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
         }
 
         if (msg instanceof FileListMessage) {
-            System.out.println("Files list on server: ");
+            System.out.println("File list on server: ");
             for (File file : ((FileListMessage) msg).getFileList()) {
+                System.out.println(file.getName());
+            }
+            System.out.println("File list on client: ");
+            for (File file : CLIENT_DIR.listFiles()) {
                 System.out.println(file.getName());
             }
         }
