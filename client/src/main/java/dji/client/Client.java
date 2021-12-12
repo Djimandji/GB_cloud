@@ -75,6 +75,7 @@ public class Client {
                     subCommand = command.split(":");
                     if (subCommand.length > 1) {
                         if (new File(CLIENT_DIR + "\\" + subCommand[1]).isFile()) {
+                            System.out.println(CLIENT_DIR+ "\\" + subCommand[1]);
                             try (RandomAccessFile randomAccessFile = new RandomAccessFile(CLIENT_DIR.getAbsolutePath() + "\\" +  subCommand[1], "r")) {
                                 final long fileLength = randomAccessFile.length();
                                 do {
@@ -100,6 +101,8 @@ public class Client {
                         } else {
                             System.out.println("file not found");
                         }
+                    } else {
+                        System.out.println("type the name of file");
                     }
                 }
                 channelFuture.channel().writeAndFlush(commandMsg);

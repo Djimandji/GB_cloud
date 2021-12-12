@@ -23,12 +23,10 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
-        //todo command handler
+        ServerResponse response = new ServerResponse();
         if (msg instanceof CommandMessage) {
             String command = ((CommandMessage) msg).getCommand();
             String[] subCommand;
-            ServerResponse response = new ServerResponse();
-            response.setResponse("Unknown command");
             subCommand = command.split(":");
             switch (subCommand[0]) {
 
@@ -48,17 +46,20 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
                             response.setResponse("File not found");
                         }
                     }
+                    break;
 
                 case "sendFile":
                     System.out.println("New send file message");
+                    break;
 
 
                 case "fileList":
                     channelRead0(ctx, new RequestFileList());
-                    response.setResponse("command done");
+                    break;
 
                 case "disconnect":
                     ctx.close();
+                    break;
 
 
                 case "clearServer":
@@ -66,9 +67,13 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
                         item.delete();
                     }
                     response.setResponse("Server was clear");
+                    break;
+
+
+                default:
+                    response.setResponse("Unknown command");
 
             }
-            ctx.writeAndFlush(response);
         }
 
         if (msg instanceof RequestFileList) {
@@ -79,6 +84,7 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
             FileListMessage fileList = new FileListMessage();
             fileList.setFileList(files);
             ctx.writeAndFlush(fileList);
+            response.setResponse("command done");
         }
 
         if (msg instanceof FileTransferMessage) {
@@ -94,7 +100,10 @@ public class ServerHandler extends SimpleChannelInboundHandler <Message> {
         }
         if (msg instanceof EndFileTransferMessage) {
             System.out.println("File transfer is finished");
+            response.setResponse("File send to server");
         }
+        ctx.writeAndFlush(response);
+
     }
 
 
