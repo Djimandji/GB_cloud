@@ -1,6 +1,17 @@
 package dji.common.objects;
 
 public class FileTransferMessage extends Message {
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private byte[] content;
 
     public byte[] getContent() {

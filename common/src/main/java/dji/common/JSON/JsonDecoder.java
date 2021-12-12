@@ -1,4 +1,4 @@
-package dji.common.handler;
+package dji.common.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dji.common.objects.Message;
